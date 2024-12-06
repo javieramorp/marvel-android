@@ -1,0 +1,18 @@
+<resources>
+    <!-- Common -->
+    <string name="app_name">Marvel Characters</string>
+    <string name="common_error_unauthorized">Revisa los datos usados en la app.</string>
+    <string name="common_error_network">Revisa tu conexión a internet.</string>
+    <string name="common_error_generic">Ha habido un problema con la aplicación, reintentalo de nuevo.</string>
+    <string name="common_error_mapping">Ha habido un problema con los datos de la aplicación, contacta con el administrador.</string>
+    <string name="common_retry_action">Reintentar</string>
+    <string name="common_image_logo">Logo de Marvel</string>
+
+    <!-- Characters module -->
+    <string name="characters_title">Personajes de Marvel</string>
+
+    <!-- Character detail module -->
+    <string name="character_detail_title">Detalle de personaje</string>
+    <string name="character_detail_image">Imagen del personaje</string>
+
+</resources>
