@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.characters.CharactersFragment">
+
+    <ListView
+        android:scrollbars="none"
+        android:choiceMode="singleChoice"
+        android:listSelector="@android:color/darker_gray"
+        android:id="@+id/lv_alphabet"
+        android:layout_width="@dimen/width_alphabet"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:background="@color/blue" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_characters"
+        android:layout_marginEnd="@dimen/width_alphabet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/red"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/row_character" />
+
+    <ImageView
+        android:foreground="?android:selectableItemBackground"
+        android:background="@color/red"
+        android:id="@+id/iv_characters_not_available"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:paddingHorizontal="@dimen/margin_32"
+        android:src="@drawable/logo_boom"
+        android:visibility="invisible"
+        tools:alpha="0.1"
+        tools:visibility="visible" />
+
+</RelativeLayout>
