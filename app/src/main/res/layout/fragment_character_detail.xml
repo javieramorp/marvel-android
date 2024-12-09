@@ -24,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_weight="50"
             android:orientation="vertical"
+            android:background="@color/grey_light"
             android:layout_height="0dp">
 
             <LinearLayout
@@ -35,6 +36,7 @@
                 <TextView
                     android:textSize="@dimen/text_22"
                     android:id="@+id/tv_name"
+                    tools:text="Test name"
                     android:textColor="@color/red"
                     android:textStyle="bold"
                     android:layout_width="match_parent"

@@ -54,7 +54,6 @@ object NetworkModule {
     fun provideMockRetrofit(httpClient: OkHttpClient.Builder, moshi: Moshi.Builder, interceptor: RequestInterceptor): Retrofit {
         return Retrofit.Builder()
             .client(httpClient.addInterceptor(interceptor).build())
-            .client(httpClient.build())
             .baseUrl(BuildConfig.BASE_URL_MARVEL)
             .addConverterFactory(MoshiConverterFactory.create(moshi.build()))
             .build()

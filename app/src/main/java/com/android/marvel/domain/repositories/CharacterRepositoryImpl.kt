@@ -6,13 +6,13 @@ import com.android.marvel.domain.models.Character
 import javax.inject.Inject
 
 interface CharacterRepository {
-    suspend fun getCharacter(characterId: Int): Resource<List<Character>>
+    suspend fun getCharacter(characterId: Int): Resource<Character>
     suspend fun getCharacters(nameStartsLetter: String?): Resource<List<Character>>
 }
 
 class CharacterRepositoryImpl @Inject constructor(private val datasource: CharacterDatasource): CharacterRepository {
 
-    override suspend fun getCharacter(characterId: Int): Resource<List<Character>> =
+    override suspend fun getCharacter(characterId: Int): Resource<Character> =
         datasource.getCharacter(characterId)
 
     override suspend fun getCharacters(nameStartsLetter: String?): Resource<List<Character>> =

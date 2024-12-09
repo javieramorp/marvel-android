@@ -2,23 +2,28 @@ package com.android.marvel.ui.characters
 
 import androidx.lifecycle.viewModelScope
 import com.android.marvel.R
+import com.android.marvel.common.infrastructure.ResourcesAccessor
 import com.android.marvel.domain.base.Resource
 import com.android.marvel.domain.models.Character
 import com.android.marvel.domain.usecases.GetCharactersUseCase
-import com.android.marvel.ui.base.EventObserver
 import com.android.marvel.ui.base.BaseViewModel
-import com.android.marvel.ui.characters.CharactersViewModel.Event.*
+import com.android.marvel.ui.base.EventObserver
+import com.android.marvel.ui.characters.CharactersViewModel.Event.GoToCharacterDetail
+import com.android.marvel.ui.characters.CharactersViewModel.Event.SetupUi
+import com.android.marvel.ui.characters.CharactersViewModel.Event.ShowCharacters
+import com.android.marvel.ui.characters.CharactersViewModel.Event.ShowCharactersNotAvailable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CharactersViewModel @Inject constructor(private val getCharactersUseCase: GetCharactersUseCase): BaseViewModel() {
+class CharactersViewModel @Inject constructor(private val getCharactersUseCase: GetCharactersUseCase,
+                                              private val resourcesAccessor: ResourcesAccessor): BaseViewModel(resourcesAccessor) {
 
     sealed class Event: EventObserver {
         data class SetupUi(val title: String): Event()
         data class ShowCharacters(val characters: List<Character>): Event()
-        object ShowCharactersNotAvailable: Event()
+        data object ShowCharactersNotAvailable: Event()
         data class GoToCharacterDetail(val characterId: Int): Event()
     }
 
@@ -47,7 +52,7 @@ class CharactersViewModel @Inject constructor(private val getCharactersUseCase: 
     //endregion
 
     //region inputs
-    fun initFlow() { /** we use initFlow because resourcesAccessor injection in BaseViewModel is not initiated at init{} call */
+    fun initFlow() {
         this.alphabetCache = resourcesAccessor.getArray(R.array.alphabet)
         doEvent(SetupUi(getString(R.string.characters_title)))
 

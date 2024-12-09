@@ -8,7 +8,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.text.ParseException
 
 interface SafeApiCall {
 
@@ -42,9 +44,8 @@ interface SafeApiCall {
                 val errorResponse = ErrorResponseMapper.map(throwable)
                 handleHttpException(throwable.code(), errorResponse?.message)
             }
-            is JsonEncodingException -> Resource.Failure(FailureError.Mapping)
-            is JsonDataException -> Resource.Failure(FailureError.Mapping)
-            is UnknownHostException, is IOException -> Resource.Failure(FailureError.Network)
+            is JsonDataException, is JsonEncodingException, is ParseException -> Resource.Failure(FailureError.Mapping)
+            is SocketTimeoutException, is UnknownHostException, is IOException -> Resource.Failure(FailureError.Network)
             else -> Resource.Failure(FailureError.Generic)
         }
     }

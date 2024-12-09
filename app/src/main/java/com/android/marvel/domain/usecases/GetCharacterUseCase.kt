@@ -7,10 +7,5 @@ import javax.inject.Inject
 
 class GetCharacterUseCase @Inject constructor(private val repository: CharacterRepository) {
 
-    suspend fun invoke(characterId: Int): Resource<Character> {
-        return when (val result = repository.getCharacter(characterId)) {
-            is Resource.Success -> Resource.Success(result.value.first())
-            is Resource.Failure -> Resource.Failure(result.type, result.message)
-        }
-    }
+    suspend fun invoke(characterId: Int): Resource<Character> = repository.getCharacter(characterId)
 }

@@ -2,6 +2,7 @@ package com.android.marvel.ui.characterdetail
 
 import androidx.lifecycle.viewModelScope
 import com.android.marvel.R
+import com.android.marvel.common.infrastructure.ResourcesAccessor
 import com.android.marvel.ui.base.BaseViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -13,12 +14,13 @@ import com.android.marvel.ui.base.EventObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 @HiltViewModel
-class CharacterDetailViewModel @Inject constructor(private val getCharacterUseCase: GetCharacterUseCase): BaseViewModel() {
+class CharacterDetailViewModel @Inject constructor(private val getCharacterUseCase: GetCharacterUseCase,
+                                                   resourcesAccessor: ResourcesAccessor): BaseViewModel(resourcesAccessor) {
 
     sealed class Event: EventObserver {
         data class SetupUi(val title: String): Event()
         data class ShowDetail(val character: Character): Event()
-        object ShowCharacterNotAvailable: Event()
+        data object ShowCharacterNotAvailable: Event()
     }
 
     private var characterIdCache = 0

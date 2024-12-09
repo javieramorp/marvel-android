@@ -12,18 +12,11 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-open class BaseViewModel: ViewModel() {
-
-    /** resourcesAccessor injection not initiated at ViewModel init{} call, use instead public method initFlow() */
-    @Inject
-    lateinit var resourcesAccessor: ResourcesAccessor
+open class BaseViewModel @Inject constructor(private val resourcesAccessor: ResourcesAccessor): ViewModel() {
 
     private val eventChannel = Channel<EventObserver>(Channel.BUFFERED)
     val eventsFlow = eventChannel.receiveAsFlow()
 
-    /**
-     * handleError send a BaseEvent from BaseViewModel to BaseActivity or BaseFragment
-     */
     protected fun handleError(failure: Resource.Failure) {
         when(failure.type) {
             FailureError.InvalidApiKeyOrHashOrTimestamp -> showMessage(R.string.common_error_unauthorized)
