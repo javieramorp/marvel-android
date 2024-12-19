@@ -5,38 +5,35 @@ import com.android.marvel.domain.base.FailureError
 import com.android.marvel.domain.base.Resource
 import com.android.marvel.domain.models.Character
 import com.android.marvel.domain.repositories.CharacterRepository
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 class GetCharacterUseCaseTest {
 
-    private lateinit var getCharacterUseCase: GetCharacterUseCase
-
-    @RelaxedMockK
+    private lateinit var sut: GetCharacterUseCase
     private lateinit var characterRepository: CharacterRepository
-
 
     @Before
     fun setUp() {
-        MockKAnnotations.init(this)
-        getCharacterUseCase = GetCharacterUseCase(characterRepository)
+        characterRepository = mock()
+        sut = GetCharacterUseCase(characterRepository)
     }
 
     @Test
     fun `invoke should return character when repository succeeds`() = runTest {
         val expectedCharacter = fixture<Character>()
         val characterId = 1
-        coEvery { characterRepository.getCharacter(characterId) } returns Resource.Success(expectedCharacter)
+        whenever(characterRepository.getCharacter(characterId)).thenReturn(Resource.Success(expectedCharacter))
 
-        val result = getCharacterUseCase.invoke(characterId)
+        val result = sut.invoke(characterId)
 
-        coVerify(exactly = 1) { characterRepository.getCharacter(characterId) }
+        verify(characterRepository, times(1)).getCharacter(characterId)
         Assert.assertEquals(result, Resource.Success(expectedCharacter))
     }
 
@@ -45,11 +42,11 @@ class GetCharacterUseCaseTest {
         val expectedFailure = FailureError.Network
         val characterId = 1
 
-        coEvery { characterRepository.getCharacter(characterId) } returns Resource.Failure(expectedFailure)
+        whenever(characterRepository.getCharacter(characterId)).thenReturn(Resource.Failure(expectedFailure))
 
-        val result = getCharacterUseCase.invoke(characterId)
+        val result = sut.invoke(characterId)
 
-        coVerify(exactly = 1) { characterRepository.getCharacter(characterId) }
+        verify(characterRepository, times(1)).getCharacter(characterId)
         Assert.assertEquals(result, Resource.Failure(expectedFailure))
     }
 }

@@ -5,26 +5,24 @@ import com.android.marvel.domain.base.FailureError
 import com.android.marvel.domain.base.Resource
 import com.android.marvel.domain.models.Character
 import com.android.marvel.domain.repositories.CharacterRepository
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.whenever
 
 class GetCharactersUseCaseTest {
 
-    private lateinit var getCharactersUseCase: GetCharactersUseCase
-
-    @RelaxedMockK
+    private lateinit var sut: GetCharactersUseCase
     private lateinit var characterRepository: CharacterRepository
 
     @Before
     fun setup() {
-        MockKAnnotations.init(this)
-        getCharactersUseCase = GetCharactersUseCase(characterRepository)
+        characterRepository = mock()
+        sut = GetCharactersUseCase(characterRepository)
     }
 
     @Test
@@ -32,11 +30,11 @@ class GetCharactersUseCaseTest {
         val characterNamePrefix = "a"
         val expectedResponseSuccess = Resource.Success(listOf(fixture<Character>(), fixture<Character>()))
 
-        coEvery { characterRepository.getCharacters(characterNamePrefix) } returns expectedResponseSuccess
+        whenever(characterRepository.getCharacters(characterNamePrefix)).thenReturn(expectedResponseSuccess)
 
-        val result = getCharactersUseCase.invoke(characterNamePrefix)
+        val result = sut.invoke(characterNamePrefix)
 
-        coVerify(exactly = 1) { characterRepository.getCharacters(characterNamePrefix) }
+        verify(characterRepository, times(1)).getCharacters(characterNamePrefix)
         Assert.assertEquals(expectedResponseSuccess, result)
     }
 
@@ -45,11 +43,11 @@ class GetCharactersUseCaseTest {
         val characterNamePrefix = "a"
         val expectedResponseFailure = Resource.Failure(FailureError.Network)
 
-        coEvery { characterRepository.getCharacters(characterNamePrefix) } returns expectedResponseFailure
+        whenever(characterRepository.getCharacters(characterNamePrefix)).thenReturn(expectedResponseFailure)
 
-        val result = getCharactersUseCase.invoke(characterNamePrefix)
+        val result = sut.invoke(characterNamePrefix)
 
-        coVerify(exactly = 1) { characterRepository.getCharacters(characterNamePrefix) }
+        verify(characterRepository, times(1)).getCharacters(characterNamePrefix)
         Assert.assertEquals(expectedResponseFailure, result)
     }
 }

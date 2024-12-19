@@ -9,17 +9,19 @@ import com.android.marvel.domain.models.Character
 import com.android.marvel.domain.usecases.GetCharacterUseCase
 import com.android.marvel.ui.base.BaseEvent
 import com.android.marvel.ui.base.EventObserver
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
+import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito.mock
+import org.mockito.kotlin.any
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 class CharacterDetailViewModelTest {
 
@@ -32,20 +34,19 @@ class CharacterDetailViewModelTest {
 
     @Before
     fun setUp() {
-        MockKAnnotations.init(this)
-        resourcesAccessor = mockk(relaxed = true)
-        getCharacterUseCase = mockk(relaxed = true)
+        resourcesAccessor = mock()
+        getCharacterUseCase = mock()
         sut = CharacterDetailViewModel(getCharacterUseCase, resourcesAccessor)
     }
 
     @Test
     fun `should initFlow emits correct sequence of events when view appears` () = runTest {
         val characterId = 1
-        val title = "Character detail"
+        val title = fixture<String>()
         val expectedCharacter = fixture<Character>()
 
-        every { resourcesAccessor.getString(any()) } returns title
-        coEvery { getCharacterUseCase.invoke(characterId) } returns Resource.Success(expectedCharacter)
+        whenever(resourcesAccessor.getString(any())).thenReturn(title)
+        whenever(getCharacterUseCase.invoke(characterId)).thenReturn(Resource.Success(expectedCharacter))
 
         val events = mutableListOf<EventObserver>()
         val job = launch { sut.eventsFlow.toList(events) }
@@ -55,18 +56,18 @@ class CharacterDetailViewModelTest {
         job.cancel()
 
         val setupUiEvent = events[0].assertIfIsEvent<CharacterDetailViewModel.Event.SetupUi>()
-        assert(setupUiEvent.title == title)
+        assertTrue(setupUiEvent.title == title)
 
         val loadingEventStart = events[1].assertIfIsEvent<BaseEvent.ShowLoading>()
-        assert(loadingEventStart.visibility)
+        assertTrue(loadingEventStart.visibility)
 
         val showCharactersEvent = events[2].assertIfIsEvent<CharacterDetailViewModel.Event.ShowDetail>()
-        assert(showCharactersEvent.character == expectedCharacter)
+        assertTrue(showCharactersEvent.character == expectedCharacter)
 
         val loadingEventEnd = events[3].assertIfIsEvent<BaseEvent.ShowLoading>()
-        assert(!loadingEventEnd.visibility)
+        assertFalse(loadingEventEnd.visibility)
 
-        coVerify(exactly = 1) { resourcesAccessor.getString(any()) }
-        coVerify(exactly = 1) { getCharacterUseCase.invoke(characterId) }
+        verify(resourcesAccessor, times(1)).getString(any())
+        verify(getCharacterUseCase, times(1)).invoke(characterId)
     }
 }
