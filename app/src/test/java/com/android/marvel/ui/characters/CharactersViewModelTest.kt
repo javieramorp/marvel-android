@@ -9,17 +9,19 @@ import com.android.marvel.domain.models.Character
 import com.android.marvel.domain.usecases.GetCharactersUseCase
 import com.android.marvel.ui.base.BaseEvent
 import com.android.marvel.ui.base.EventObserver
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
+import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito.mock
+import org.mockito.kotlin.any
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 
 class CharactersViewModelTest {
@@ -33,21 +35,20 @@ class CharactersViewModelTest {
 
     @Before
     fun setup() {
-        MockKAnnotations.init(this)
-        resourcesAccessor = mockk(relaxed = true)
-        getCharactersUseCase = mockk(relaxed = true)
+        resourcesAccessor = mock()
+        getCharactersUseCase = mock()
         sut = CharactersViewModel(getCharactersUseCase, resourcesAccessor)
     }
 
     @Test
     fun `should initFlow emits correct sequence of events when app starts` () = runTest {
-        val title = "Characters"
+        val title = fixture<String>()
         val alphabetCache = arrayOf("a", "b", "c")
         val expectedCharacters = listOf(fixture<Character>(), fixture<Character>())
 
-        every { resourcesAccessor.getArray(any()) } returns alphabetCache
-        every { resourcesAccessor.getString(any()) } returns title
-        coEvery { getCharactersUseCase.invoke(alphabetCache.first()) } returns Resource.Success(expectedCharacters)
+        whenever(resourcesAccessor.getArray(any())).thenReturn(alphabetCache)
+        whenever(resourcesAccessor.getString(any())).thenReturn(title)
+        whenever(getCharactersUseCase.invoke(alphabetCache.first())).thenReturn(Resource.Success(expectedCharacters))
 
         val events = mutableListOf<EventObserver>()
         val job = launch { sut.eventsFlow.toList(events) }
@@ -57,29 +58,29 @@ class CharactersViewModelTest {
         job.cancel()
 
         val setupUiEvent = events[0].assertIfIsEvent<CharactersViewModel.Event.SetupUi>()
-        assert(setupUiEvent.title == title)
+        assertTrue(setupUiEvent.title == title)
 
         val loadingEventStart = events[1].assertIfIsEvent<BaseEvent.ShowLoading>()
-        assert(loadingEventStart.visibility)
+        assertTrue(loadingEventStart.visibility)
 
         val showCharactersEvent = events[2].assertIfIsEvent<CharactersViewModel.Event.ShowCharacters>()
-        assert(showCharactersEvent.characters == expectedCharacters)
+        assertTrue(showCharactersEvent.characters == expectedCharacters)
 
         val loadingEventEnd = events[3].assertIfIsEvent<BaseEvent.ShowLoading>()
-        assert(!loadingEventEnd.visibility)
+        assertFalse(loadingEventEnd.visibility)
 
-        coVerify(exactly = 1) { resourcesAccessor.getArray(any()) }
-        coVerify(exactly = 1) { getCharactersUseCase.invoke(alphabetCache.first()) }
+        verify(resourcesAccessor, times(1)).getArray(any())
+        verify(resourcesAccessor, times(1)).getString(any())
     }
 
     @Test
     fun `should initFlow emits correct sequence of events when app already starts` () = runTest {
-        val title = "Characters"
+        val title = fixture<String>()
         val alphabetCache = arrayOf("a", "b", "c")
         val expectedCharacters = listOf(fixture<Character>(), fixture<Character>())
 
-        every { resourcesAccessor.getArray(any()) } returns alphabetCache
-        every { resourcesAccessor.getString(any()) } returns title
+        whenever(resourcesAccessor.getArray(any())).thenReturn(alphabetCache)
+        whenever(resourcesAccessor.getString(any())).thenReturn(title)
 
         val charactersCacheField = CharactersViewModel::class.java.getDeclaredField("charactersCache")
         charactersCacheField.isAccessible = true
@@ -93,13 +94,13 @@ class CharactersViewModelTest {
         job.cancel()
 
         val setupUiEvent = events.first().assertIfIsEvent<CharactersViewModel.Event.SetupUi>()
-        assert(setupUiEvent.title == title)
+        assertTrue(setupUiEvent.title == title)
 
         val showCharactersEvent = events.last().assertIfIsEvent<CharactersViewModel.Event.ShowCharacters>()
-        assert(showCharactersEvent.characters == expectedCharacters)
+        assertTrue(showCharactersEvent.characters == expectedCharacters)
 
-        coVerify(exactly = 1) { resourcesAccessor.getArray(any()) }
-        coVerify(exactly = 1) { resourcesAccessor.getString(any()) }
-        coVerify(exactly = 0) { getCharactersUseCase.invoke(any()) }
+        verify(resourcesAccessor, times(1)).getArray(any())
+        verify(resourcesAccessor, times(1)).getString(any())
+        verify(getCharactersUseCase, times(0)).invoke(any())
     }
 }
