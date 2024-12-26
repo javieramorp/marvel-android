@@ -8,12 +8,12 @@ import com.android.marvel.domain.base.Resource
 import com.android.marvel.domain.models.Character
 import javax.inject.Inject
 
-interface CharacterDatasource {
+interface CharacterRemoteDatasource {
     suspend fun getCharacter(characterId: Int): Resource<Character>
     suspend fun getCharacters(nameStartsLetter: String?, limit: Int = 100): Resource<List<Character>>
 }
 
-class CharacterDatasourceImpl @Inject constructor(private val apiClient: MarvelApiClient): CharacterDatasource, BaseDataSource() {
+class CharacterRemoteDatasourceImpl @Inject constructor(private val apiClient: MarvelApiClient): CharacterRemoteDatasource, BaseDataSource() {
 
     override suspend fun getCharacter(characterId: Int): Resource<Character> = safeApiCall(MarvelCharactersResponseMapper()) {
         apiClient.getCharacter(characterId)

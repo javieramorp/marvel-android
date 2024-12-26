@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_characters_to_character_detail"
             app:destination="@id/fragment_character_detail" />
+        <action
+            android:id="@+id/action_characters_to_favorite_characters"
+            app:destination="@id/fragment_favorite_characters" />
     </fragment>
 
     <fragment
@@ -23,6 +26,16 @@
         <argument
             android:name="characterId"
             app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_favorite_characters"
+        android:name="com.android.marvel.ui.favoritecharacters.FavoriteCharactersFragment"
+        android:label="@string/favorite_characters_title"
+        tools:layout="@layout/fragment_favorite_characters" >
+        <action
+            android:id="@+id/action_favorite_characters_to_character_detail"
+            app:destination="@id/fragment_character_detail" />
     </fragment>
 
 </navigation>

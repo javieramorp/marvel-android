@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = namespace
-        minSdk = 23
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -63,6 +63,7 @@ dependencies {
     val lifecycleVersion = "2.8.7"
     val retrofitVersion = "2.9.0"
     val moshiVersion = "1.15.1"
+    val roomVersion = "2.6.1"
 
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.core:core-ktx:1.13.1")
@@ -72,8 +73,11 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:${rootProject.ext["navVersion"]}")
     implementation("androidx.navigation:navigation-ui-ktx:${rootProject.ext["navVersion"]}")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
     implementation("com.google.dagger:hilt-android:${rootProject.ext["hiltVersion"]}")
     ksp("com.google.dagger:hilt-compiler:${rootProject.ext["hiltVersion"]}")
@@ -83,12 +87,12 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:$moshiVersion")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     ksp("com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
-    implementation("com.github.bumptech.glide:glide:4.14.2")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     ksp("com.github.bumptech.glide:ksp:4.14.2")
 
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
     androidTestImplementation("androidx.test.ext:junit-ktx:1.2.1")

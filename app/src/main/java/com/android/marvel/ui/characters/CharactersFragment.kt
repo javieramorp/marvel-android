@@ -34,19 +34,22 @@ class CharactersFragment : BaseFragment() {
     }
 
     private fun observeEvents() {
-        viewModel.eventsFlow.observe(this) { event ->
+        viewModel.eventsFlow.observe(viewLifecycleOwner) { event ->
             when (event) {
-                is SetupUi -> {
-                    binding.lvAlphabet.adapter = activity?.let { activity -> ArrayAdapter(activity, R.layout.row_alphabet, resources.getStringArray(R.array.alphabet)) }
-                    binding.lvAlphabet.setOnItemClickListener { _, _, position, _ -> viewModel.didClickOnLetterAt(position) }
-                    binding.ivCharactersNotAvailable.setOnClickListener { viewModel.didClickOnRetry() }
+                is SetupUi -> with(binding) {
+                    lvAlphabet.adapter = activity?.let { activity -> ArrayAdapter(activity, R.layout.row_alphabet, resources.getStringArray(R.array.alphabet)) }
+                    lvAlphabet.setOnItemClickListener { _, _, position, _ -> viewModel.didClickOnLetterAt(position) }
+                    ivCharactersNotAvailable.setOnClickListener { viewModel.didClickOnRetry() }
+                    fabFavoriteCharacters.setOnClickListener { viewModel.didClickOnFavoriteCharacter() }
                 }
-                is ShowCharacters -> {
-                    binding.ivCharactersNotAvailable.isVisible = false
-                    binding.rvCharacters.adapter = CharacterAdapter(event.characters, viewModel::didClickOnCharacter)
+                is ShowCharacters -> with(binding) {
+                    ivCharactersNotAvailable.isVisible = false
+                    rvCharacters.adapter = CharacterAdapter(event.characters, viewModel::didClickOnCharacter)
                 }
+                is ShowFavoriteCharactersAction -> binding.fabFavoriteCharacters.isVisible = event.isVisible
                 is ShowCharactersNotAvailable -> binding.ivCharactersNotAvailable.isVisible = true
                 is GoToCharacterDetail -> findNavController().navigate(CharactersFragmentDirections.actionCharactersToCharacterDetail(event.characterId))
+                is GoToFavoriteCharacters -> findNavController().navigate(CharactersFragmentDirections.actionCharactersToFavoriteCharacters())
                 else -> handleEvent(event)
             }
         }

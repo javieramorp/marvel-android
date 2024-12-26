@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:importantForAccessibility="yes">
+
+    <item
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_share"
+        app:showAsAction="ifRoom"
+        android:contentDescription="@string/common_share_action"
+        android:title="@string/common_share_action" />
+
+    <item
+        android:id="@+id/action_favourite"
+        android:icon="@drawable/ic_star_unselected"
+        app:showAsAction="always"
+        android:contentDescription="@string/common_favorite_action"
+        android:title="@string/common_favorite_action" />
+
+</menu>

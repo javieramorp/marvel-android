@@ -1,5 +1,7 @@
 package com.android.marvel.common.extensions
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.widget.ImageView
 import androidx.lifecycle.Lifecycle
@@ -32,4 +34,14 @@ fun String.md5(): String {
 
 fun ImageView.loadUrl(url: String?, placeHolder: Int = R.drawable.logo_circle_marvel) {
     Glide.with(context).load(url).placeholder(placeHolder).into(this)
+}
+
+fun Context?.createShareIntent(title: String, infoContent: String) {
+    this?.let { wrappedContext ->
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            putExtra(Intent.EXTRA_TEXT, infoContent)
+            type = "text/plain"
+        }
+        wrappedContext.startActivity(Intent.createChooser(intent, title))
+    }
 }

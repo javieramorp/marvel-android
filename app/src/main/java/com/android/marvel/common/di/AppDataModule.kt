@@ -1,7 +1,9 @@
 package com.android.marvel.common.di
 
-import com.android.marvel.data.datasources.CharacterDatasource
-import com.android.marvel.data.datasources.CharacterDatasourceImpl
+import com.android.marvel.data.datasources.CharacterLocaleDatasource
+import com.android.marvel.data.datasources.CharacterLocaleDatasourceImpl
+import com.android.marvel.data.datasources.CharacterRemoteDatasource
+import com.android.marvel.data.datasources.CharacterRemoteDatasourceImpl
 import com.android.marvel.domain.repositories.CharacterRepository
 import com.android.marvel.domain.repositories.CharacterRepositoryImpl
 import dagger.Binds
@@ -16,7 +18,11 @@ abstract class AppDataModule {
 
     @Binds
     @Singleton
-    abstract fun bindsCharacterDataSource(datasource: CharacterDatasourceImpl): CharacterDatasource
+    abstract fun bindsCharacterRemoteDataSource(datasource: CharacterRemoteDatasourceImpl): CharacterRemoteDatasource
+
+    @Binds
+    @Singleton
+    abstract fun bindsCharacterLocaleDataSource(datasource: CharacterLocaleDatasourceImpl): CharacterLocaleDatasource
 
     @Binds
     @Singleton

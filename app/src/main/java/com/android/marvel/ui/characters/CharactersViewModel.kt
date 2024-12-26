@@ -6,6 +6,7 @@ import com.android.marvel.common.infrastructure.ResourcesAccessor
 import com.android.marvel.domain.base.Resource
 import com.android.marvel.domain.models.Character
 import com.android.marvel.domain.usecases.GetCharactersUseCase
+import com.android.marvel.domain.usecases.GetFavoriteCharactersUseCase
 import com.android.marvel.ui.base.BaseViewModel
 import com.android.marvel.ui.base.EventObserver
 import com.android.marvel.ui.characters.CharactersViewModel.Event.GoToCharacterDetail
@@ -18,12 +19,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharactersViewModel @Inject constructor(private val getCharactersUseCase: GetCharactersUseCase,
+                                              private val getFavoriteCharactersUseCase: GetFavoriteCharactersUseCase,
                                               private val resourcesAccessor: ResourcesAccessor): BaseViewModel(resourcesAccessor) {
 
     sealed class Event: EventObserver {
         data class SetupUi(val title: String): Event()
         data class ShowCharacters(val characters: List<Character>): Event()
         data object ShowCharactersNotAvailable: Event()
+        data class ShowFavoriteCharactersAction(val isVisible: Boolean): Event()
+        data object GoToFavoriteCharacters: Event()
         data class GoToCharacterDetail(val characterId: Int): Event()
     }
 
@@ -49,12 +53,22 @@ class CharactersViewModel @Inject constructor(private val getCharactersUseCase: 
             showLoading(false)
         }
     }
+
+    private fun retrieveFavoriteCharacters() {
+        viewModelScope.launch {
+            when(val result = getFavoriteCharactersUseCase.invoke()) {
+                is Resource.Success -> doEvent(Event.ShowFavoriteCharactersAction(result.value.isNotEmpty()))
+                is Resource.Failure -> doEvent(Event.ShowFavoriteCharactersAction(false))
+            }
+        }
+    }
     //endregion
 
     //region inputs
     fun initFlow() {
         this.alphabetCache = resourcesAccessor.getArray(R.array.alphabet)
         doEvent(SetupUi(getString(R.string.characters_title)))
+        retrieveFavoriteCharacters()
 
         charactersCache?.let {
             doEvent(ShowCharacters(it))
@@ -69,6 +83,10 @@ class CharactersViewModel @Inject constructor(private val getCharactersUseCase: 
         this.lastSelectedAlphabetIndex = position
         val startsLetterCharacter = alphabetCache[position]
         retrieveCharacters(startsLetterCharacter)
+    }
+
+    fun didClickOnFavoriteCharacter() {
+        doEvent(Event.GoToFavoriteCharacters)
     }
 
     fun didClickOnRetry() {

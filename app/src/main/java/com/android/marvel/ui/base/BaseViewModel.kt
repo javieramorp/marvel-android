@@ -23,6 +23,8 @@ open class BaseViewModel @Inject constructor(private val resourcesAccessor: Reso
             FailureError.Mapping -> showMessage(R.string.common_error_mapping)
             FailureError.Network -> showMessage(R.string.common_error_network)
             FailureError.InvalidReferOrHash -> showMessage(R.string.common_error_generic)
+            FailureError.NotFound -> showMessage(R.string.common_error_not_found)
+            FailureError.DatabaseError -> showMessage(R.string.common_error_database_error)
             FailureError.Generic -> showMessage(R.string.common_error_generic)
         }
     }

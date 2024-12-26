@@ -4,15 +4,25 @@
     <string name="common_error_unauthorized">Revisa los datos usados en la app.</string>
     <string name="common_error_network">Revisa tu conexión a internet.</string>
     <string name="common_error_generic">Ha habido un problema con la aplicación, reintentalo de nuevo.</string>
+    <string name="common_error_not_found">No se encontro el elemento solicitado.</string>
+    <string name="common_error_database_error">Ha habido un problema con la base de datos, contacta con el administrador.</string>
     <string name="common_error_mapping">Ha habido un problema con los datos de la aplicación, contacta con el administrador.</string>
+    <string name="common_error_operation_fail">No se puede realizar esta operación</string>
     <string name="common_retry_action">Reintentar</string>
     <string name="common_image_logo">Logo de Marvel</string>
+    <string name="common_favorite_action">Imagen del personaje</string>
+    <string name="common_share_action">Imagen del personaje</string>
 
     <!-- Characters module -->
     <string name="characters_title">Personajes de Marvel</string>
+    <string name="characters_favorite_action">Ver favoritos Marvel</string>
 
     <!-- Character detail module -->
     <string name="character_detail_title">Detalle de personaje</string>
     <string name="character_detail_image">Imagen del personaje</string>
+
+    <!-- Favorite Characters module -->
+    <string name="favorite_characters_title">Personajes favoritos de Marvel</string>
+    <string name="favorite_characters_empty_list">No hay personajes favoritos</string>">
 
 </resources>
